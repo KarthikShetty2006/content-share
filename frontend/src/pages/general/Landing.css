@@ -1,0 +1,60 @@
+.landing-container {
+  background-image: url('https://images.unsplash.com/photo-1600891964599-f61ba0e24092');
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  position: relative;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.overlay {
+  background-color: rgba(0, 0, 0, 0.6);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  text-align: center;
+  padding: 20px;
+}
+
+.title {
+  font-size: 3rem;
+  margin-bottom: 10px;
+  color: #ffcc00;
+}
+
+.subtitle {
+  font-size: 1.5rem;
+  margin-bottom: 30px;
+  color: #f0f0f0;
+}
+
+.button-group {
+  display: flex;
+  gap: 20px;
+}
+
+.btn {
+  padding: 15px 30px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.user-btn {
+  background-color: #28a745;
+  color: white;
+}
+
+.partner-btn {
+  background-color: #17a2b8;
+  color: white;
+}
+
+.btn:hover {
+  transform: scale(1.05);
+}

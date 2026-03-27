@@ -1,0 +1,89 @@
+:root {
+  /* 🎨 Base Theme Colors */
+  --primary-color: #6200ea;
+  --secondary-color: #03dac6;
+
+  /* Light Mode */
+  --background-color-light: #ffffff;
+  --text-color-light: #000000;
+
+  /* Dark Mode */
+  --background-color-dark: #121212;
+  --text-color-dark: #ffffff;
+
+  /* Common Properties */
+  --border-radius: 4px;
+  --font-family: 'Arial', sans-serif;
+  --font-size: 16px;
+
+  /* 🌈 Extended Colors (for components like profile page) */
+  --color-text: var(--text-color-light);
+  --color-text-secondary: #666666;
+  --color-surface: #f9f9f9;
+  --color-surface-alt: #f2f2f2;
+  --color-on-surface: #ffffff;
+  --color-border: #e0e0e0;
+
+  /* 💡 Shadows and Borders */
+  --shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.1);
+  --radius-md: 8px;
+
+  /* 📏 Spacing Scale */
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+}
+
+/* 🧭 Global Styles */
+body {
+  margin: 0;
+  font-family: var(--font-family);
+  font-size: var(--font-size);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* ☀️ Light Theme */
+.light-theme {
+  background-color: var(--background-color-light);
+  color: var(--text-color-light);
+  --color-text: var(--text-color-light);
+  --color-surface: #ffffff;
+  --color-surface-alt: #f9f9f9;
+  --color-border: #e0e0e0;
+  --color-text-secondary: #555;
+}
+
+/* 🌙 Dark Theme */
+.dark-theme {
+  background-color: var(--background-color-dark);
+  color: var(--text-color-dark);
+  --color-text: var(--text-color-dark);
+  --color-surface: #1e1e1e;
+  --color-surface-alt: #2a2a2a;
+  --color-border: #333;
+  --color-text-secondary: #aaa;
+}
+
+/* 🖋️ Headings Reset */
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+}
+
+/* 🔘 Buttons */
+button {
+  background-color: var(--primary-color);
+  color: var(--text-color-dark);
+  border: none;
+  border-radius: var(--border-radius);
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-weight: 600;
+}
+
+button:hover {
+  background-color: var(--secondary-color);
+}

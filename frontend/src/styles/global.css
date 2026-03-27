@@ -1,0 +1,55 @@
+:root {
+    --background-color-light: #ffffff;
+    --background-color-dark: #121212;
+    --text-color-light: #000000;
+    --text-color-dark: #ffffff;
+    --primary-color: #6200ea;
+    --secondary-color: #03dac6;
+    --border-radius: 4px;
+    --font-family: 'Arial', sans-serif;
+}
+
+body {
+    margin: 0;
+    font-family: var(--font-family);
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.light-theme {
+    background-color: var(--background-color-light);
+    color: var(--text-color-light);
+}
+
+.dark-theme {
+    background-color: var(--background-color-dark);
+    color: var(--text-color-dark);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+}
+
+a {
+    text-decoration: none;
+    color: var(--primary-color);
+}
+
+button {
+    background-color: var(--primary-color);
+    color: var(--text-color-dark);
+    border: none;
+    border-radius: var(--border-radius);
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: var(--secondary-color);
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}

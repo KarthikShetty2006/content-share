@@ -1,0 +1,196 @@
+/* ...existing code... */
+.form-group {
+  position: relative;
+  width: 100%;
+}
+
+.create-food {
+  min-height: 100vh;
+  padding: var(--space-4);
+  background: linear-gradient(135deg, #1a1f25 0%, #2d1f3d 50%, #1f252f 100%);
+  display: grid;
+  place-items: center;
+}
+
+.create-food-form {
+  width: 100%;
+  max-width: 480px;
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(12px);
+  padding: var(--space-6);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 6px 32px rgba(31, 38, 135, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  animation: formAppear 0.6s ease-out;
+}
+
+.create-food-title {
+  background: linear-gradient(45deg, #FF416C, #FF4B2B);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 2px 15px rgba(255, 65, 108, 0.2);
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+  box-sizing: border-box;
+  background: rgba(255, 255, 255, 0.07);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: #FF416C;
+  box-shadow: 0 0 0 4px rgba(255, 65, 108, 0.15);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.video-upload-area {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+  border: 2px dashed rgba(255, 255, 255, 0.2);
+}
+
+.video-upload-area:hover {
+  border-color: #FF416C;
+  background: linear-gradient(145deg, rgba(255, 65, 108, 0.1), rgba(255, 75, 43, 0.05));
+  box-shadow: 0 8px 32px rgba(255, 65, 108, 0.15);
+}
+
+.video-preview {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.submit-btn {
+  background: linear-gradient(45deg, #FF416C, #FF4B2B);
+  box-shadow: 0 8px 24px rgba(255, 65, 108, 0.25);
+}
+
+.submit-btn:hover {
+  background: linear-gradient(45deg, #FF4B2B, #FF416C);
+  box-shadow: 0 8px 32px rgba(255, 65, 108, 0.4);
+  transform: translateY(-2px);
+}
+
+.submit-btn:disabled {
+  background: linear-gradient(45deg, #4a4a4a, #686868);
+  box-shadow: none;
+}
+
+/* Add a shimmer effect to the button */
+.submit-btn::before {
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+}
+
+/* Add glow effects on form interactions */
+.form-group input:focus,
+.form-group textarea:focus,
+.video-upload-area:hover {
+  transition: all 0.3s ease;
+  filter: drop-shadow(0 0 8px rgba(255, 65, 108, 0.3));
+}
+
+/* Enhanced animation for the upload icon */
+@keyframes float {
+  0%, 100% { 
+    transform: translateY(0) scale(1); 
+    filter: drop-shadow(0 5px 15px rgba(255, 65, 108, 0.2));
+  }
+  50% { 
+    transform: translateY(-10px) scale(1.05);
+    filter: drop-shadow(0 15px 15px rgba(255, 65, 108, 0.4));
+  }
+}
+/* Make video smaller and clean */
+.video-preview {
+  width: 200px;
+  height: 120px;
+  border-radius: var(--radius-md);
+  object-fit: cover;
+  margin-top: var(--space-3);
+  transition: all 0.3s ease;
+}
+
+.video-preview:hover {
+  transform: scale(1.05);
+}
+
+/* Image upload styling */
+.image-upload-area {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+  border: 2px dashed rgba(255, 255, 255, 0.2);
+  padding: var(--space-3);
+  text-align: center;
+  border-radius: var(--radius-md);
+  transition: all 0.3s ease;
+}
+
+.image-upload-area:hover {
+  border-color: #FF416C;
+  background: linear-gradient(145deg, rgba(255, 65, 108, 0.1), rgba(255, 75, 43, 0.05));
+  box-shadow: 0 8px 32px rgba(255, 65, 108, 0.15);
+}
+
+/* Image preview thumbnail */
+.image-preview {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  margin-top: var(--space-2);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease;
+}
+
+.image-preview:hover {
+  transform: scale(1.05);
+}
+/* Smaller, clean video preview */
+.video-preview {
+  width: 220px;
+  height: 140px;
+  border-radius: var(--radius-md);
+  object-fit: cover;
+  margin-top: var(--space-3);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Wrap for video + remove button */
+.video-preview-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+}
+
+/* Remove video button */
+.remove-video-btn {
+  background: linear-gradient(45deg, #FF4B2B, #FF416C);
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.85rem;
+  box-shadow: 0 4px 12px rgba(255, 65, 108, 0.3);
+}
+
+.remove-video-btn:hover {
+  background: linear-gradient(45deg, #ff6a3d, #ff2f61);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(255, 65, 108, 0.5);
+}
