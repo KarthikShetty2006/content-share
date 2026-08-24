@@ -87,8 +87,8 @@ const UserRegister = () => {
           </p>
 
           <p className="muted switch-role">
-            Own a restaurant?{' '}
-            <Link to="/food-partner/register">Register as Food Partner</Link>
+            Have a Content?{' '}
+            <Link to="/food-partner/register">Register as Creator</Link>
           </p>
         </div>
       </form>

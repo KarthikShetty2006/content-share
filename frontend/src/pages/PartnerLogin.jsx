@@ -35,7 +35,7 @@ const PartnerLogin = () => {
   return (
     <div className="auth-container">
       <form className="auth-form" data-role="partner" onSubmit={handleSubmit}>
-        <h2 className="auth-title">Sign in — Food Partner</h2>
+        <h2 className="auth-title">Sign in — Content Creator</h2>
 
         {error && <div className="error-message">{error}</div>}
 
@@ -68,11 +68,11 @@ const PartnerLogin = () => {
         <div className="auth-links">
           <p className="muted">
             New to the platform?{' '}
-            <Link to="/food-partner/register">Create Partner Account</Link>
+            <Link to="/food-partner/register">Create Creator Account</Link>
           </p>
 
           <p className="muted switch-role">
-            Want to order food?{' '}
+            Want to Create Content?{' '}
             <Link to="/user/register">Register as User</Link>
           </p>
         </div>

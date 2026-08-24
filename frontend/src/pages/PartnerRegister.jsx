@@ -46,12 +46,12 @@ const PartnerRegister = () => {
   return (
     <div className="auth-container">
       <form className="auth-form" data-role="partner" onSubmit={handleSubmit}>
-        <h2 className="auth-title">Create account — Food Partner</h2>
+        <h2 className="auth-title">Create account — Creator</h2>
 
         {error && <div className="error-message">{error}</div>}
 
         <div className="form-group">
-          <label htmlFor="name">Business Name</label>
+          <label htmlFor="name">Creator Account Name</label>
           <input
             id="name"
             name="name"
@@ -117,17 +117,17 @@ const PartnerRegister = () => {
         </div>
 
         <button type="submit" className="btn" disabled={loading}>
-          {loading ? 'Loading...' : 'Register Restaurant'}
+          {loading ? 'Loading...' : 'Register Creator Account'}
         </button>
 
         <div className="auth-links">
           <p className="muted">
             Already registered?{' '}
-            <Link to="/food-partner/login">Sign in as Partner</Link>
+            <Link to="/food-partner/login">Sign in as Creator</Link>
           </p>
 
           <p className="muted switch-role">
-            Want to order food?{' '}
+            Want to Create Content?{' '}
             <Link to="/user/register">Register as User</Link>
           </p>
         </div>

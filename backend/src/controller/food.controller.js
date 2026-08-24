@@ -17,12 +17,12 @@ async function createFood(req, res) {
     });
 
     res.status(201).json({
-      message: "Food created successfully",
+      message: "Content created successfully",
       food: foodItem
     });
   } catch (err) {
     console.error(err.stack);
-    res.status(500).json({ error: "Failed to create food", details: err.message });
+    res.status(500).json({ error: "Failed to create content", details: err.message });
   }
 }
 
@@ -62,7 +62,7 @@ async function saveFood(req, res) {
     const user = req.user;
 
     if (!foodId) {
-      return res.status(400).json({ message: "foodId is required" });
+      return res.status(400).json({ message: "ContentId is required" });
     }
 
     // Check if already saved

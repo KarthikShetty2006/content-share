@@ -68,7 +68,7 @@ const AuthForm = ({ type = 'login', role = 'user' }) => {
               id="name"
               name="name"
               type="text"
-              placeholder={isUser ? 'Your full name' : 'Restaurant / Cloud kitchen name'}
+              placeholder={isUser ? 'Your full name' : 'Enter name'}
               required
             />
           </div>
@@ -164,12 +164,12 @@ const AuthForm = ({ type = 'login', role = 'user' }) => {
           <p className="muted switch-role">
             {isUser ? (
               <>
-                Own a restaurant?{' '}
-                <Link to="/food-partner/register">Register as Food Partner</Link>
+                Have a Content?{' '}
+                <Link to="/food-partner/register">Register as Creator</Link>
               </>
             ) : (
               <>
-                Want to order food?{' '}
+                Want the Video?{' '}
                 <Link to="/user/register">Register as User</Link>
               </>
             )}

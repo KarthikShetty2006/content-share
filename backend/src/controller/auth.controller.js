@@ -60,7 +60,7 @@ async function registerFoodPartner(req,res) {
     const {name,email,password,phone,address,contactName}=req.body
     const isAccountAlreadyExists=await foodPartnerModel.findOne({email})
     if(isAccountAlreadyExists){
-        return res.status(400).json({message:"food partner already exists"})
+        return res.status(400).json({message:"Creator already exists"})
     }
       const hashedPassword=await bcrypt.hash(password,10)
     const foodPartner=await foodPartnerModel.create({
@@ -76,7 +76,7 @@ async function registerFoodPartner(req,res) {
     ,process.env.JWT_SECRET)
     res.cookie("token",token)
     res.status(201).json({
-        message:"food partner registered successfully",
+        message:"Creator registered successfully",
         foodPartner:{
             _id:foodPartner._id,
             email:foodPartner.email,
@@ -115,7 +115,7 @@ async function loginFoodPartner(req,res){
 function logoutFoodPartner(req,res){
     res.clearCookie("token")
     res.status(200).json({
-        message:"food partner logged out successfully"
+        message:"Creator logged out successfully"
     })
 }
 module.exports={registerUser,loginUser,logoutUser,registerFoodPartner,loginFoodPartner,logoutFoodPartner}

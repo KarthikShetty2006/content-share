@@ -55,10 +55,10 @@ const CreateFood = () => {
   return (
     <main className="create-food">
       <form className="create-food-form" onSubmit={handleSubmit}>
-        <h1 className="create-food-title">Add New Food Item</h1>
+        <h1 className="create-food-title">Add New Content</h1>
 
         <div className="form-group">
-          <label htmlFor="video">Food Video</label>
+          <label htmlFor="video"> Video</label>
           <div className="video-upload-area">
             {/* Always keep the file input, just hide it when preview exists */}
             <input
@@ -92,12 +92,12 @@ const CreateFood = () => {
         </div>
 
         <div className="form-group">
-          <label htmlFor="name">Food Name</label>
+          <label htmlFor="name">Video Name</label>
           <input
             type="text"
             id="name"
             name="name"
-            placeholder="Enter food name"
+            placeholder="Enter Video name"
             required
           />
         </div>
@@ -107,7 +107,7 @@ const CreateFood = () => {
           <textarea
             id="description"
             name="description"
-            placeholder="Describe your food item..."
+            placeholder="Describe your video..."
             rows="4"
             required
           />
@@ -118,7 +118,7 @@ const CreateFood = () => {
           className="submit-btn"
           disabled={loading}
         >
-          {loading ? 'Uploading...' : 'Create Food Item'}
+          {loading ? 'Uploading...' : 'Create Content'}
         </button>
       </form>
     </main>

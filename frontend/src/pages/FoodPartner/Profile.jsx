@@ -31,12 +31,12 @@ const Profile = () => {
               profile?.avatar ||
               'https://images.unsplash.com/photo-1603415526960-f7e0328c63b1?auto=format&fit=crop&w=200&q=80'
             }
-            alt={profile?.name || 'Food Partner'}
+            alt={profile?.name || 'Content Creator'}
           />
 
           <div className="profile-info">
             <h1 className="profile-pill profile-business" title="Business name">
-              {profile?.name || 'Food Partner'}
+              {profile?.name || 'Content Creator'}
             </h1>
 
             <p className="profile-pill profile-address" title="Address">
