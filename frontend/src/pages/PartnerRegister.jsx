@@ -13,30 +13,40 @@ const PartnerRegister = () => {
     setLoading(true);
     setError('');
 
-    const name=e.target.name.value;
-    const contactName=e.target.contactName.value;
-    const phone=e.target.phone.value;
-    const address=e.target.address.value;
-    const email=e.target.email.value;
-    const password=e.target.password.value;
+    const name = e.target.name.value;
+    const contactName = e.target.contactName.value;
+    const phone = e.target.phone.value;
+    const address = e.target.address.value;
+    const email = e.target.email.value;
+    const password = e.target.password.value;
 
     try {
-      const response = await axios.post('http://localhost:3000/api/auth/food-partner/register', {
-        name,
-        contactName,
-        phone,
-        address,
-        email,
-        password
-      }, {
-        withCredentials: true
-      });
+      const response = await axios.post(
+        'http://localhost:3000/api/auth/food-partner/register',
+        {
+          name,
+          contactName,
+          phone,
+          address,
+          email,
+          password
+        },
+        {
+          withCredentials: true
+        }
+      );
 
       console.log('Success:', response.data);
-      navigate('/create-food');
-      
+
+      // After registration, go to the main Content Share page
+      navigate('/home');
+
     } catch (err) {
-      setError(err.response?.data?.message || 'Something went wrong. Please try again.');
+      setError(
+        err.response?.data?.message ||
+        'Something went wrong. Please try again.'
+      );
+
       console.error('Error:', err);
     } finally {
       setLoading(false);
@@ -45,13 +55,26 @@ const PartnerRegister = () => {
 
   return (
     <div className="auth-container">
-      <form className="auth-form" data-role="partner" onSubmit={handleSubmit}>
-        <h2 className="auth-title">Create account — Creator</h2>
+      <form
+        className="auth-form"
+        data-role="partner"
+        onSubmit={handleSubmit}
+      >
+        <h2 className="auth-title">
+          Create account — Creator
+        </h2>
 
-        {error && <div className="error-message">{error}</div>}
+        {error && (
+          <div className="error-message">
+            {error}
+          </div>
+        )}
 
         <div className="form-group">
-          <label htmlFor="name">Creator Account Name</label>
+          <label htmlFor="name">
+            Creator Account Name
+          </label>
+
           <input
             id="name"
             name="name"
@@ -62,7 +85,10 @@ const PartnerRegister = () => {
         </div>
 
         <div className="form-group">
-          <label htmlFor="contactName">Contact Person</label>
+          <label htmlFor="contactName">
+            Contact Person
+          </label>
+
           <input
             id="contactName"
             name="contactName"
@@ -73,7 +99,10 @@ const PartnerRegister = () => {
         </div>
 
         <div className="form-group">
-          <label htmlFor="phone">Phone</label>
+          <label htmlFor="phone">
+            Phone
+          </label>
+
           <input
             id="phone"
             name="phone"
@@ -84,7 +113,10 @@ const PartnerRegister = () => {
         </div>
 
         <div className="form-group">
-          <label htmlFor="address">Address</label>
+          <label htmlFor="address">
+            Address
+          </label>
+
           <textarea
             id="address"
             name="address"
@@ -95,7 +127,10 @@ const PartnerRegister = () => {
         </div>
 
         <div className="form-group">
-          <label htmlFor="email">Email Address</label>
+          <label htmlFor="email">
+            Email Address
+          </label>
+
           <input
             id="email"
             name="email"
@@ -106,29 +141,35 @@ const PartnerRegister = () => {
         </div>
 
         <div className="form-group">
-          <label htmlFor="password">Password</label>
-          <input 
-            id="password" 
-            name="password" 
-            type="password" 
-            placeholder="••••••••" 
-            required 
+          <label htmlFor="password">
+            Password
+          </label>
+
+          <input
+            id="password"
+            name="password"
+            type="password"
+            placeholder="••••••••"
+            required
           />
         </div>
 
-        <button type="submit" className="btn" disabled={loading}>
-          {loading ? 'Loading...' : 'Register Creator Account'}
+        <button
+          type="submit"
+          className="btn"
+          disabled={loading}
+        >
+          {loading
+            ? 'Loading...'
+            : 'Register Creator Account'}
         </button>
 
         <div className="auth-links">
           <p className="muted">
             Already registered?{' '}
-            <Link to="/food-partner/login">Sign in as Creator</Link>
-          </p>
-
-          <p className="muted switch-role">
-            Want to Create Content?{' '}
-            <Link to="/user/register">Register as User</Link>
+            <Link to="/food-partner/login">
+              Sign in as Creator
+            </Link>
           </p>
         </div>
       </form>

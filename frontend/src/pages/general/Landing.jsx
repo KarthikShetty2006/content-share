@@ -8,16 +8,39 @@ const LandingPage = () => {
   return (
     <div className="landing-container">
       <div className="overlay">
-        <h1 className="title">Welcome to Content Share</h1>
-        <p className="subtitle">Explore Contents</p>
+
+        <h1 className="title">
+          Welcome to Content Share
+        </h1>
+
+        <p className="subtitle">
+          Explore, Create & Share Content
+        </p>
+
         <div className="button-group">
-          <button onClick={() => navigate('/user/register')} className="btn user-btn">
-            Register as User
+
+          {/* Sign In */}
+          <button
+            onClick={() =>
+              navigate('/food-partner/login')
+            }
+            className="btn user-btn"
+          >
+            Sign in as Creator
           </button>
-          <button onClick={() => navigate('/food-partner/register')} className="btn partner-btn">
-            Register as Creator
+
+          {/* Register */}
+          <button
+            onClick={() =>
+              navigate('/food-partner/register')
+            }
+            className="btn partner-btn"
+          >
+            Create Creator Account
           </button>
+
         </div>
+
       </div>
     </div>
   );
