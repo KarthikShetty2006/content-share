@@ -13,6 +13,7 @@ import "../../styles/food.css";
 const CreateFood = () => {
   const [loading, setLoading] = useState(false);
   const [preview, setPreview] = useState(null);
+  const [videoFile, setVideoFile] = useState(null);
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
@@ -23,12 +24,24 @@ const CreateFood = () => {
   // ======================================================
 
   const handleVideoChange = (e) => {
-    const file = e.target.files[0];
+    const file = e.target.files?.[0];
 
-    if (file) {
-      setPreview(URL.createObjectURL(file));
-      setError("");
+    if (!file) {
+      return;
     }
+
+    if (!file.type.startsWith("video/")) {
+      setError("Please select a valid video file.");
+      return;
+    }
+
+    // Store actual file for upload
+    setVideoFile(file);
+
+    // Create preview
+    setPreview(URL.createObjectURL(file));
+
+    setError("");
   };
 
   // ======================================================
@@ -36,6 +49,7 @@ const CreateFood = () => {
   // ======================================================
 
   const handleRemoveVideo = () => {
+    setVideoFile(null);
     setPreview(null);
 
     const input = document.getElementById("video");
@@ -52,26 +66,31 @@ const CreateFood = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    setLoading(true);
     setError("");
 
-    try {
-      const videoFile = e.target.video.files[0];
+    // Make sure video exists
+    if (!videoFile) {
+      setError("Please upload a video before submitting.");
+      return;
+    }
 
-      if (!videoFile) {
-        setError("Please upload a video before submitting.");
-        setLoading(false);
-        return;
-      }
+    try {
+      setLoading(true);
+
+      const name = e.currentTarget.elements.name.value;
+      const description =
+        e.currentTarget.elements.description.value;
 
       const formData = new FormData();
 
+      // IMPORTANT:
+      // This is the actual selected video file
       formData.append("video", videoFile);
-      formData.append("name", e.target.name.value);
-      formData.append(
-        "description",
-        e.target.description.value
-      );
+
+      formData.append("name", name);
+      formData.append("description", description);
+
+      console.log("Uploading:", videoFile.name);
 
       const response = await axios.post(
         "http://localhost:3000/api/food",
@@ -86,8 +105,11 @@ const CreateFood = () => {
         response.data
       );
 
-      // Immediately return to home after successful upload
-      navigate("/home", { replace: true });
+      // Upload succeeded
+      // Immediately return to feed
+      navigate("/home", {
+        replace: true,
+      });
 
     } catch (err) {
       console.error("Upload error:", err);
@@ -120,6 +142,7 @@ const CreateFood = () => {
           <div className="create-food-header">
 
             <div>
+
               <p className="create-food-eyebrow">
                 CONTENT SHARE
               </p>
@@ -131,9 +154,11 @@ const CreateFood = () => {
               <p className="create-food-subtitle">
                 Share your latest food video with the community.
               </p>
+
             </div>
 
           </div>
+
 
           {/* ERROR */}
 
@@ -142,6 +167,7 @@ const CreateFood = () => {
               {error}
             </div>
           )}
+
 
           {/* VIDEO */}
 
@@ -158,6 +184,7 @@ const CreateFood = () => {
             >
 
               {!preview && (
+
                 <div className="upload-placeholder">
 
                   <div className="upload-icon">
@@ -182,9 +209,12 @@ const CreateFood = () => {
                   />
 
                 </div>
+
               )}
 
+
               {preview && (
+
                 <div className="video-preview-wrapper">
 
                   <video
@@ -193,6 +223,10 @@ const CreateFood = () => {
                     controls
                     muted
                   />
+
+                  <p className="selected-video-name">
+                    {videoFile?.name}
+                  </p>
 
                   <button
                     type="button"
@@ -203,11 +237,13 @@ const CreateFood = () => {
                   </button>
 
                 </div>
+
               )}
 
             </div>
 
           </div>
+
 
           {/* CONTENT NAME */}
 
@@ -227,6 +263,7 @@ const CreateFood = () => {
 
           </div>
 
+
           {/* DESCRIPTION */}
 
           <div className="form-group">
@@ -245,12 +282,13 @@ const CreateFood = () => {
 
           </div>
 
+
           {/* SUBMIT */}
 
           <button
             type="submit"
             className="submit-btn"
-            disabled={loading}
+            disabled={loading || !videoFile}
           >
             {loading
               ? "Uploading..."
@@ -260,6 +298,7 @@ const CreateFood = () => {
         </form>
 
       </main>
+
 
       {/* ==================================================
           BOTTOM NAVIGATION
@@ -279,6 +318,7 @@ const CreateFood = () => {
           <span>Home</span>
         </div>
 
+
         <div
           className={`nav-icon ${
             location.pathname === "/create-food"
@@ -291,6 +331,7 @@ const CreateFood = () => {
           <span>Upload</span>
         </div>
 
+
         <div
           className={`nav-icon ${
             location.pathname === "/saved"
@@ -302,6 +343,7 @@ const CreateFood = () => {
           <FaBookmark />
           <span>Saved</span>
         </div>
+
 
         <div
           className={`nav-icon ${

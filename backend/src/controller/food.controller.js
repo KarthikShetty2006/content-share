@@ -4,7 +4,6 @@ const saveModel = require("../models/save.model");
 const commentModel = require("../models/comment.model");
 
 const { uploadFile } = require("../services/storage.service");
-const { v4: uuid } = require("uuid");
 
 
 // ======================================================
@@ -13,15 +12,32 @@ const { v4: uuid } = require("uuid");
 
 async function createFood(req, res) {
   try {
+    // Make sure a video was uploaded
+    if (!req.file) {
+      return res.status(400).json({
+        message: "Video file is required",
+      });
+    }
+
+    // Generate a unique filename without uuid package
+    const fileName = `${Date.now()}-${Math.random()
+      .toString(36)
+      .substring(2, 10)}`;
+
+    // IMPORTANT:
+    // This is still your existing ImageKit upload function
     const fileUploadResult = await uploadFile(
       req.file.buffer,
-      uuid()
+      fileName
     );
 
     const foodItem = await foodModel.create({
       name: req.body.name,
       description: req.body.description,
+
+      // ImageKit URL/result remains unchanged
       video: fileUploadResult,
+
       foodPartner: req.foodPartner._id,
     });
 
@@ -123,7 +139,7 @@ async function likeFood(req, res) {
     // LIKE
     // ------------------------------------------
 
-    const like = await likeModel.create({
+    await likeModel.create({
       foodPartner: foodPartner._id,
       food: foodId,
     });
@@ -350,6 +366,10 @@ async function getComments(req, res) {
   }
 }
 
+
+// ======================================================
+// EXPORTS
+// ======================================================
 
 module.exports = {
   createFood,
