@@ -17,7 +17,7 @@ const PartnerLogin = () => {
    const password = e.target.password.value;
 
     try {
-      const response = await axios.post('http://localhost:3000/api/auth/food-partner/login', {email, password}, {
+      const response = await axios.post('https://content-share-livid.vercel.app/api/auth/food-partner/login', {email, password}, {
         withCredentials: true}
       );
 

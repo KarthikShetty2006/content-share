@@ -29,7 +29,7 @@ const Home = () => {
   // Fetch videos
   useEffect(() => {
     axios
-      .get('http://localhost:3000/api/food', { withCredentials: true })
+      .get('https://content-share-livid.vercel.app/api/food', { withCredentials: true })
       .then((res) => setVideos(res.data.foodItems))
       .catch((err) => console.log(err));
   }, []);
@@ -93,7 +93,7 @@ const Home = () => {
   const toggleLike = async (item) => {
     try {
       const res = await axios.post(
-        'http://localhost:3000/api/food/like',
+        'https://content-share-livid.vercel.app/api/food/like',
         { foodId: item._id },
         { withCredentials: true }
       );
@@ -114,7 +114,7 @@ const Home = () => {
   const toggleSave = async (item) => {
     try {
       const res = await axios.post(
-        'http://localhost:3000/api/food/save',
+        'https://content-share-livid.vercel.app/api/food/save',
         { foodId: item._id },
         { withCredentials: true }
       );
@@ -135,7 +135,7 @@ const Home = () => {
   const openComments = async (food) => {
     try {
       console.log('Fetching comments for food infrontend:', food._id);
-      const res = await axios.get(`http://localhost:3000/api/food/comments/${food._id}`, {
+      const res = await axios.get(`https://content-share-livid.vercel.app/api/food/comments/${food._id}`, {
         withCredentials: true,
       });
       setComments(res.data.comments || []);
@@ -150,7 +150,7 @@ const Home = () => {
     if (!newComment.trim()) return;
     try {
       const res = await axios.post(
-        `http://localhost:3000/api/food/comment`,
+        `https://content-share-livid.vercel.app/api/food/comment`,
         { foodId: selectedFood._id, commentText: newComment },
         { withCredentials: true }
       );

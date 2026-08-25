@@ -16,7 +16,7 @@ const SavedVideos = () => {
       try {
         setLoading(true);
         const response = await axios.get(
-          "http://localhost:3000/api/food/saved",
+          "https://content-share-livid.vercel.app/api/food/saved",
           { withCredentials: true }
         );
         setSavedVideos(response.data.savedFoods || []);

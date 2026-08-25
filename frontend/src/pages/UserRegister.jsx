@@ -18,7 +18,7 @@ const UserRegister = () => {
     const password=e.target.password.value;
     
     try {
-      const response= await axios.post('http://localhost:3000/api/auth/user/register',{
+      const response= await axios.post('https://content-share-livid.vercel.app/api/auth/user/register',{
         fullName,
         email,
         password 

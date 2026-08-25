@@ -37,7 +37,7 @@ const CreateFood = () => {
       formData.append('name', e.target.name.value);
       formData.append('description', e.target.description.value);
 
-      const response = await axios.post('http://localhost:3000/api/food', formData, {
+      const response = await axios.post('https://content-share-livid.vercel.app/api/food', formData, {
         withCredentials: true,
         // headers: { 'Content-Type': 'multipart/form-data' }, // Axios sets this automatically
       });

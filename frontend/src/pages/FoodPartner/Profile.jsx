@@ -12,7 +12,7 @@ const Profile = () => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:3000/api/food-partner/${id}`, { withCredentials: true })
+      .get(`https://content-share-livid.vercel.app/api/food-partner/${id}`, { withCredentials: true })
       .then((response) => {
         console.log('Fetched profile data:', response.data);
         setProfile(response.data.foodPartner);
