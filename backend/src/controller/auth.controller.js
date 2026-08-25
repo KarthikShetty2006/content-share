@@ -2,7 +2,6 @@ const foodPartnerModel = require("../models/foodpartner.model");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-
 // ======================================================
 // REGISTER CREATOR
 // ======================================================
@@ -10,6 +9,7 @@ const jwt = require("jsonwebtoken");
 async function registerFoodPartner(req, res) {
   try {
     const {
+      clerkId,
       name,
       email,
       password,
@@ -20,6 +20,7 @@ async function registerFoodPartner(req, res) {
 
     // Validate required fields
     if (
+      !clerkId ||
       !name ||
       !email ||
       !password ||
@@ -32,11 +33,19 @@ async function registerFoodPartner(req, res) {
       });
     }
 
-    // Check existing account
-    const isAccountAlreadyExists =
-      await foodPartnerModel.findOne({
-        email,
+    // Check Clerk ID
+    const existingClerkUser =
+      await foodPartnerModel.findOne({ clerkId });
+
+    if (existingClerkUser) {
+      return res.status(400).json({
+        message: "This verified account is already registered",
       });
+    }
+
+    // Check email
+    const isAccountAlreadyExists =
+      await foodPartnerModel.findOne({ email });
 
     if (isAccountAlreadyExists) {
       return res.status(400).json({
@@ -44,11 +53,9 @@ async function registerFoodPartner(req, res) {
       });
     }
 
-    // Check phone number
+    // Check phone
     const isPhoneAlreadyExists =
-      await foodPartnerModel.findOne({
-        phone,
-      });
+      await foodPartnerModel.findOne({ phone });
 
     if (isPhoneAlreadyExists) {
       return res.status(400).json({
@@ -61,9 +68,10 @@ async function registerFoodPartner(req, res) {
     const hashedPassword =
       await bcrypt.hash(password, 10);
 
-    // Create account
+    // Create creator account
     const foodPartner =
       await foodPartnerModel.create({
+        clerkId,
         name,
         email,
         password: hashedPassword,
@@ -72,7 +80,10 @@ async function registerFoodPartner(req, res) {
         contactName,
       });
 
-    // Create JWT
+    // ==================================================
+    // CREATE YOUR JWT
+    // ==================================================
+
     const token = jwt.sign(
       {
         id: foodPartner._id,
@@ -100,6 +111,7 @@ async function registerFoodPartner(req, res) {
 
       foodPartner: {
         _id: foodPartner._id,
+        clerkId: foodPartner.clerkId,
         email: foodPartner.email,
         name: foodPartner.name,
         contactName: foodPartner.contactName,
@@ -113,11 +125,10 @@ async function registerFoodPartner(req, res) {
       error
     );
 
-    // MongoDB duplicate key
     if (error.code === 11000) {
       return res.status(400).json({
         message:
-          "Email or phone number already exists",
+          "Email, phone number, or Clerk account already exists",
       });
     }
 
@@ -127,7 +138,6 @@ async function registerFoodPartner(req, res) {
     });
   }
 }
-
 
 // ======================================================
 // LOGIN CREATOR
@@ -143,11 +153,8 @@ async function loginFoodPartner(req, res) {
       });
     }
 
-    // Find creator
     const foodPartner =
-      await foodPartnerModel.findOne({
-        email,
-      });
+      await foodPartnerModel.findOne({ email });
 
     if (!foodPartner) {
       return res.status(400).json({
@@ -179,7 +186,7 @@ async function loginFoodPartner(req, res) {
       }
     );
 
-    // Store JWT in cookie
+    // Store JWT
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -195,6 +202,7 @@ async function loginFoodPartner(req, res) {
 
       foodPartner: {
         _id: foodPartner._id,
+        clerkId: foodPartner.clerkId,
         email: foodPartner.email,
         name: foodPartner.name,
         contactName: foodPartner.contactName,
@@ -215,7 +223,6 @@ async function loginFoodPartner(req, res) {
   }
 }
 
-
 // ======================================================
 // LOGOUT CREATOR
 // ======================================================
@@ -235,7 +242,6 @@ function logoutFoodPartner(req, res) {
   });
 }
 
-
 // ======================================================
 // EXPORTS
 // ======================================================
@@ -244,4 +250,4 @@ module.exports = {
   registerFoodPartner,
   loginFoodPartner,
   logoutFoodPartner,
-};
+};  

@@ -1,55 +1,80 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import '../../styles/food.css';
+import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate, useLocation } from "react-router-dom";
+import {
+  FaHome,
+  FaPlus,
+  FaBookmark,
+  FaUser,
+} from "react-icons/fa";
+
+import "../../styles/food.css";
 
 const CreateFood = () => {
   const [loading, setLoading] = useState(false);
   const [preview, setPreview] = useState(null);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // ======================================================
+  // VIDEO CHANGE
+  // ======================================================
 
   const handleVideoChange = (e) => {
     const file = e.target.files[0];
 
     if (file) {
       setPreview(URL.createObjectURL(file));
-      setError('');
+      setError("");
     }
   };
 
+  // ======================================================
+  // REMOVE VIDEO
+  // ======================================================
+
   const handleRemoveVideo = () => {
     setPreview(null);
-    document.getElementById('video').value = '';
+
+    const input = document.getElementById("video");
+
+    if (input) {
+      input.value = "";
+    }
   };
+
+  // ======================================================
+  // UPLOAD CONTENT
+  // ======================================================
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     setLoading(true);
-    setError('');
+    setError("");
 
     try {
       const videoFile = e.target.video.files[0];
 
       if (!videoFile) {
-        setError('Please upload a video before submitting.');
+        setError("Please upload a video before submitting.");
         setLoading(false);
         return;
       }
 
       const formData = new FormData();
 
-      formData.append('video', videoFile);
-      formData.append('name', e.target.name.value);
+      formData.append("video", videoFile);
+      formData.append("name", e.target.name.value);
       formData.append(
-        'description',
+        "description",
         e.target.description.value
       );
 
       const response = await axios.post(
-        'http://localhost:3000/api/food',
+        "http://localhost:3000/api/food",
         formData,
         {
           withCredentials: true,
@@ -57,132 +82,242 @@ const CreateFood = () => {
       );
 
       console.log(
-        'Content created successfully:',
+        "Content created successfully:",
         response.data
       );
 
-      // Go back to Content Share Home
-      navigate('/home');
+      // Immediately return to home after successful upload
+      navigate("/home", { replace: true });
 
     } catch (err) {
-      console.error('Upload error:', err);
+      console.error("Upload error:", err);
 
       setError(
         err.response?.data?.message ||
-          'Failed to upload content. Please try again.'
+          "Failed to upload content. Please try again."
       );
     } finally {
       setLoading(false);
     }
   };
 
+  // ======================================================
+  // PAGE
+  // ======================================================
+
   return (
-    <main className="create-food">
-      <form
-        className="create-food-form"
-        onSubmit={handleSubmit}
-      >
-        <h1 className="create-food-title">
-          Add New Content
-        </h1>
+    <div className="create-food-page">
 
-        {error && (
-          <div className="error-message">
-            {error}
+      <main className="create-food">
+
+        <form
+          className="create-food-form"
+          onSubmit={handleSubmit}
+        >
+
+          {/* HEADER */}
+
+          <div className="create-food-header">
+
+            <div>
+              <p className="create-food-eyebrow">
+                CONTENT SHARE
+              </p>
+
+              <h1 className="create-food-title">
+                Add New Content
+              </h1>
+
+              <p className="create-food-subtitle">
+                Share your latest food video with the community.
+              </p>
+            </div>
+
           </div>
-        )}
 
-        {/* VIDEO */}
+          {/* ERROR */}
 
-        <div className="form-group">
-          <label htmlFor="video">
-            Video
-          </label>
+          {error && (
+            <div className="upload-error">
+              {error}
+            </div>
+          )}
 
-          <div className="video-upload-area">
+          {/* VIDEO */}
+
+          <div className="form-group">
+
+            <label htmlFor="video">
+              Video
+            </label>
+
+            <div
+              className={`video-upload-area ${
+                preview ? "has-preview" : ""
+              }`}
+            >
+
+              {!preview && (
+                <div className="upload-placeholder">
+
+                  <div className="upload-icon">
+                    +
+                  </div>
+
+                  <strong>
+                    Choose a video
+                  </strong>
+
+                  <span>
+                    MP4, MOV or other video formats
+                  </span>
+
+                  <input
+                    type="file"
+                    id="video"
+                    name="video"
+                    accept="video/*"
+                    required
+                    onChange={handleVideoChange}
+                  />
+
+                </div>
+              )}
+
+              {preview && (
+                <div className="video-preview-wrapper">
+
+                  <video
+                    src={preview}
+                    className="video-preview"
+                    controls
+                    muted
+                  />
+
+                  <button
+                    type="button"
+                    className="remove-video-btn"
+                    onClick={handleRemoveVideo}
+                  >
+                    Remove Video
+                  </button>
+
+                </div>
+              )}
+
+            </div>
+
+          </div>
+
+          {/* CONTENT NAME */}
+
+          <div className="form-group">
+
+            <label htmlFor="name">
+              Video Name
+            </label>
 
             <input
-              type="file"
-              id="video"
-              name="video"
-              accept="video/*"
-              required={!preview}
-              onChange={handleVideoChange}
-              style={{
-                display: preview ? 'none' : 'block',
-              }}
+              type="text"
+              id="name"
+              name="name"
+              placeholder="Enter video name"
+              required
             />
 
-            {preview && (
-              <div className="video-preview-wrapper">
+          </div>
 
-                <video
-                  src={preview}
-                  className="video-preview"
-                  controls
-                  muted
-                />
+          {/* DESCRIPTION */}
 
-                <button
-                  type="button"
-                  className="remove-video-btn"
-                  onClick={handleRemoveVideo}
-                >
-                  Remove Video
-                </button>
+          <div className="form-group">
 
-              </div>
-            )}
+            <label htmlFor="description">
+              Description
+            </label>
+
+            <textarea
+              id="description"
+              name="description"
+              placeholder="Describe your video..."
+              rows="4"
+              required
+            />
 
           </div>
-        </div>
 
-        {/* CONTENT NAME */}
+          {/* SUBMIT */}
 
-        <div className="form-group">
-          <label htmlFor="name">
-            Video Name
-          </label>
+          <button
+            type="submit"
+            className="submit-btn"
+            disabled={loading}
+          >
+            {loading
+              ? "Uploading..."
+              : "Create Content"}
+          </button>
 
-          <input
-            type="text"
-            id="name"
-            name="name"
-            placeholder="Enter Video name"
-            required
-          />
-        </div>
+        </form>
 
-        {/* DESCRIPTION */}
+      </main>
 
-        <div className="form-group">
-          <label htmlFor="description">
-            Description
-          </label>
+      {/* ==================================================
+          BOTTOM NAVIGATION
+      ================================================== */}
 
-          <textarea
-            id="description"
-            name="description"
-            placeholder="Describe your video..."
-            rows="4"
-            required
-          />
-        </div>
+      <div className="bottom-nav">
 
-        {/* SUBMIT */}
-
-        <button
-          type="submit"
-          className="submit-btn"
-          disabled={loading}
+        <div
+          className={`nav-icon ${
+            location.pathname === "/home"
+              ? "active"
+              : ""
+          }`}
+          onClick={() => navigate("/home")}
         >
-          {loading
-            ? 'Uploading...'
-            : 'Create Content'}
-        </button>
+          <FaHome />
+          <span>Home</span>
+        </div>
 
-      </form>
-    </main>
+        <div
+          className={`nav-icon ${
+            location.pathname === "/create-food"
+              ? "active"
+              : ""
+          }`}
+          onClick={() => navigate("/create-food")}
+        >
+          <FaPlus />
+          <span>Upload</span>
+        </div>
+
+        <div
+          className={`nav-icon ${
+            location.pathname === "/saved"
+              ? "active"
+              : ""
+          }`}
+          onClick={() => navigate("/saved")}
+        >
+          <FaBookmark />
+          <span>Saved</span>
+        </div>
+
+        <div
+          className={`nav-icon ${
+            location.pathname === "/profile"
+              ? "active"
+              : ""
+          }`}
+          onClick={() => navigate("/profile")}
+        >
+          <FaUser />
+          <span>Profile</span>
+        </div>
+
+      </div>
+
+    </div>
   );
 };
 
