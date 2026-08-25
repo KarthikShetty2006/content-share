@@ -1,9 +1,9 @@
 const mongoose=require('mongoose')
 
 const likeSchema=new mongoose.Schema({
-    user:{
+    foodPartner:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:'user',
+        ref:'foodpartner',
         required:true 
     },
     food:{
@@ -14,6 +14,9 @@ const likeSchema=new mongoose.Schema({
 },{
     timestamps:true
 })
-
+likeSchema.index(
+  { foodPartner: 1, food: 1 },
+  { unique: true }
+);
 const likeModel=mongoose.model('like',likeSchema)
 module.exports=likeModel;

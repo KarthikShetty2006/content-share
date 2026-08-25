@@ -1,12 +1,23 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client'; // ✅ correct import for React 18
-import App from './App';
-import './styles/global.css';
-import './styles/theme.css';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { ClerkProvider } from "@clerk/react";
 
-const root = ReactDOM.createRoot(document.getElementById('root')); // ✅ createRoot is from react-dom/client
-root.render(
+import App from "./App";
+
+import "./styles/global.css";
+import "./styles/theme.css";
+
+const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
+console.log("CLERK KEY:", clerkPubKey);
+
+if (!clerkPubKey) {
+  throw new Error("Missing VITE_CLERK_PUBLISHABLE_KEY");
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <App />
+    <ClerkProvider publishableKey={clerkPubKey}>
+      <App />
+    </ClerkProvider>
   </React.StrictMode>
 );
