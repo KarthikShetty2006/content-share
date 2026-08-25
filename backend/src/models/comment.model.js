@@ -1,8 +1,8 @@
 const mongoose=require('mongoose')
 const commentSchema=new mongoose.Schema({
-     user:{
+     foodPartner:{
             type:mongoose.Schema.Types.ObjectId,
-            ref:'user',
+            ref:'foodpartner',
             required:true 
         },
         food:{

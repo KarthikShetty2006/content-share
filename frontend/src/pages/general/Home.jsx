@@ -1,7 +1,8 @@
-import React, { useState, useRef, useEffect } from 'react';
-import './Home.css';
-import axios from 'axios';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useRef, useEffect } from "react";
+import "./Home.css";
+import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
+
 import {
   FaHeart,
   FaRegBookmark,
@@ -9,24 +10,30 @@ import {
   FaHome,
   FaBookmark,
   FaTimes,
-} from 'react-icons/fa';
+  FaPlus,
+  FaUser,
+} from "react-icons/fa";
 
 const Home = () => {
   const [videos, setVideos] = useState([]);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+
   const [likes, setLikes] = useState([]);
   const [saves, setSaves] = useState({});
-  const [showSaved, setShowSaved] = useState(false);
-  const [savedVideos, setSavedVideos] = useState([]);
-  const [comments, setComments] = useState([]); // All comments for selected video
-  const [selectedFood, setSelectedFood] = useState(null); // Current food being commented on
-  const [newComment, setNewComment] = useState(''); // New comment text
 
-  const Navigate = useNavigate();
+  const [comments, setComments] = useState([]);
+  const [selectedFood, setSelectedFood] = useState(null);
+  const [newComment, setNewComment] = useState("");
+
+  const navigate = useNavigate();
+
   const containerRef = useRef(null);
   const videoRefs = useRef([]);
 
-  // Fetch videos
+  // ======================================================
+  // FETCH VIDEOS
+  // ======================================================
+
   useEffect(() => {
     axios
       .get('https://content-share-livid.vercel.app/api/food', { withCredentials: true })
@@ -34,13 +41,19 @@ const Home = () => {
       .catch((err) => console.log(err));
   }, []);
 
-  // Video autoplay logic
+  // ======================================================
+  // VIDEO AUTOPLAY
+  // ======================================================
+
   useEffect(() => {
     videoRefs.current.forEach((video, index) => {
       if (video) {
         if (index === currentVideoIndex) {
           video.currentTime = 0;
-          video.play().catch((err) => console.log('Play error:', err));
+
+          video
+            .play()
+            .catch((err) => console.log("Play error:", err));
         } else {
           video.pause();
         }
@@ -48,48 +61,116 @@ const Home = () => {
     });
   }, [currentVideoIndex]);
 
-  // Scroll/swipe handling
+  // ======================================================
+  // SCROLL / SWIPE
+  // ======================================================
+
   useEffect(() => {
     const container = containerRef.current;
+
+    if (!container) return;
+
     let touchStartY = 0;
-    let localVideoIndex = 0;
+    let localVideoIndex = currentVideoIndex;
 
     const handleScroll = (e) => {
       e.preventDefault();
+
       const delta = e.deltaY;
       const videoHeight = container.clientHeight;
+
       if (Math.abs(delta) < 50) return;
-      if (delta > 0 && localVideoIndex < videos.length - 1) localVideoIndex++;
-      else if (delta < 0 && localVideoIndex > 0) localVideoIndex--;
+
+      if (
+        delta > 0 &&
+        localVideoIndex < videos.length - 1
+      ) {
+        localVideoIndex++;
+      } else if (
+        delta < 0 &&
+        localVideoIndex > 0
+      ) {
+        localVideoIndex--;
+      }
+
       setCurrentVideoIndex(localVideoIndex);
-      container.scrollTo({ top: localVideoIndex * videoHeight, behavior: 'smooth' });
+
+      container.scrollTo({
+        top: localVideoIndex * videoHeight,
+        behavior: "smooth",
+      });
     };
 
     const handleTouchStart = (e) => {
       touchStartY = e.touches[0].clientY;
     };
+
     const handleTouchEnd = (e) => {
-      const delta = touchStartY - e.changedTouches[0].clientY;
+      const delta =
+        touchStartY - e.changedTouches[0].clientY;
+
       const videoHeight = container.clientHeight;
+
       if (Math.abs(delta) < 50) return;
-      if (delta > 0 && localVideoIndex < videos.length - 1) localVideoIndex++;
-      else if (delta < 0 && localVideoIndex > 0) localVideoIndex--;
+
+      if (
+        delta > 0 &&
+        localVideoIndex < videos.length - 1
+      ) {
+        localVideoIndex++;
+      } else if (
+        delta < 0 &&
+        localVideoIndex > 0
+      ) {
+        localVideoIndex--;
+      }
+
       setCurrentVideoIndex(localVideoIndex);
-      container.scrollTo({ top: localVideoIndex * videoHeight, behavior: 'smooth' });
+
+      container.scrollTo({
+        top: localVideoIndex * videoHeight,
+        behavior: "smooth",
+      });
     };
 
-    container.addEventListener('wheel', handleScroll, { passive: false });
-    container.addEventListener('touchstart', handleTouchStart);
-    container.addEventListener('touchend', handleTouchEnd);
+    container.addEventListener(
+      "wheel",
+      handleScroll,
+      { passive: false }
+    );
+
+    container.addEventListener(
+      "touchstart",
+      handleTouchStart
+    );
+
+    container.addEventListener(
+      "touchend",
+      handleTouchEnd
+    );
 
     return () => {
-      container.removeEventListener('wheel', handleScroll);
-      container.removeEventListener('touchstart', handleTouchStart);
-      container.removeEventListener('touchend', handleTouchEnd);
+      container.removeEventListener(
+        "wheel",
+        handleScroll
+      );
+
+      container.removeEventListener(
+        "touchstart",
+        handleTouchStart
+      );
+
+      container.removeEventListener(
+        "touchend",
+        handleTouchEnd
+      );
     };
   }, [videos.length]);
 
-  // Like toggle
+  // ======================================================
+  // LIKE
+  // ======================================================
+
   const toggleLike = async (item) => {
     try {
       const res = await axios.post(
@@ -97,20 +178,35 @@ const Home = () => {
         { foodId: item._id },
         { withCredentials: true }
       );
+
       const isLiked = res.data.like;
+
+      setLikes((prev) => ({
+        ...prev,
+        [item._id]: isLiked,
+      }));
+
       setVideos((prev) =>
         prev.map((v) =>
           v._id === item._id
-            ? { ...v, likeCount: isLiked ? v.likeCount + 1 : v.likeCount - 1 }
+            ? {
+                ...v,
+                likeCount: isLiked
+                  ? v.likeCount + 1
+                  : Math.max(0, v.likeCount - 1),
+              }
             : v
         )
       );
     } catch (err) {
-      console.error('Error liking:', err);
+      console.error("Error liking:", err);
     }
   };
 
-  // Save toggle
+  // ======================================================
+  // SAVE
+  // ======================================================
+
   const toggleSave = async (item) => {
     try {
       const res = await axios.post(
@@ -118,20 +214,35 @@ const Home = () => {
         { foodId: item._id },
         { withCredentials: true }
       );
+
       const isSaved = res.data.save;
+
+      setSaves((prev) => ({
+        ...prev,
+        [item._id]: isSaved,
+      }));
+
       setVideos((prev) =>
         prev.map((v) =>
           v._id === item._id
-            ? { ...v, saveCount: isSaved ? v.saveCount + 1 : v.saveCount - 1 }
+            ? {
+                ...v,
+                saveCount: isSaved
+                  ? v.saveCount + 1
+                  : Math.max(0, v.saveCount - 1),
+              }
             : v
         )
       );
     } catch (err) {
-      console.error('Error saving:', err);
+      console.error("Error saving:", err);
     }
   };
 
-  // Fetch comments for a food
+  // ======================================================
+  // OPEN COMMENTS
+  // ======================================================
+
   const openComments = async (food) => {
     try {
       console.log('Fetching comments for food infrontend:', food._id);
@@ -141,135 +252,282 @@ const Home = () => {
       setComments(res.data.comments || []);
       setSelectedFood(food);
     } catch (err) {
-      console.error('Error fetching comments:', err);
+      console.error("Error fetching comments:", err);
     }
   };
 
-  // Post new comment
+  // ======================================================
+  // ADD COMMENT
+  // ======================================================
+
   const submitComment = async () => {
-    if (!newComment.trim()) return;
+    if (!newComment.trim() || !selectedFood) {
+      return;
+    }
+
     try {
       const res = await axios.post(
         `https://content-share-livid.vercel.app/api/food/comment`,
         { foodId: selectedFood._id, commentText: newComment },
         { withCredentials: true }
       );
-      // Push the returned comment object
-      setComments((prev) => [...prev, res.data.comment]);
-      setNewComment('');
+
+      setComments((prev) => [
+        ...prev,
+        res.data.comment,
+      ]);
+
+      setNewComment("");
     } catch (err) {
-      console.error('Error adding comment:', err);
+      console.error("Error adding comment:", err);
     }
   };
 
-  // Close comment modal
+  // ======================================================
+  // CLOSE COMMENTS
+  // ======================================================
+
   const closeComments = () => {
     setSelectedFood(null);
     setComments([]);
-    setNewComment('');
+    setNewComment("");
   };
+
+  // ======================================================
+  // RENDER
+  // ======================================================
 
   return (
     <div className="app-background">
       <div className="phone-frame">
-        {!showSaved ? (
-          <div className="video-feed-container" ref={containerRef}>
-            {videos.map((item, index) => (
-              <div key={item._id} className="video-container">
-                <video
-                  ref={(el) => (videoRefs.current[index] = el)}
-                  className="video-player"
-                  src={item.video}
-                  loop
-                  muted
-                  playsInline
-                  preload="metadata"
-                />
-                <div className="video-overlay">
-                  <p className="video-description">{item.description}</p>
-                  <Link to={`/food-partner/${item.foodPartner}`} className="visit-store-btn">
-                    Visit store
-                  </Link>
+
+        {/* ================= VIDEO FEED ================= */}
+
+        <div
+          className="video-feed-container"
+          ref={containerRef}
+        >
+          {videos.map((item, index) => (
+            <div
+              key={item._id}
+              className="video-container"
+            >
+              <video
+                ref={(el) =>
+                  (videoRefs.current[index] = el)
+                }
+                className="video-player"
+                src={item.video}
+                loop
+                muted
+                playsInline
+                preload="metadata"
+              />
+
+              {/* VIDEO INFORMATION */}
+
+              <div className="video-overlay">
+                <p className="video-description">
+                  {item.description}
+                </p>
+
+                <Link
+                  to={`/food-partner/${item.foodPartner?._id || item.foodPartner}`}
+                  className="visit-store-btn"
+                >
+                  Visit Profile
+                </Link>
+              </div>
+
+              {/* ACTIONS */}
+
+              <div className="video-actions">
+
+                {/* LIKE */}
+
+                <div
+                  className="action-btn"
+                  onClick={() =>
+                    toggleLike(item)
+                  }
+                >
+                  <FaHeart
+                    className={`icon ${
+                      likes[item._id]
+                        ? "liked"
+                        : ""
+                    }`}
+                  />
+
+                  <span>
+                    Likes:{" "}
+                    {item.likeCount ??
+                      item.likes ??
+                      0}
+                  </span>
                 </div>
 
-                <div className="video-actions">
-                  <div className="action-btn" onClick={() => toggleLike(item)}>
-                    <FaHeart className={`icon ${likes[item._id] ? 'liked' : ''}`} />
-                    <span>Likes: {item.likeCount ?? item.likes ?? 0}</span>
-                  </div>
+                {/* SAVE */}
 
-                  <div className="action-btn" onClick={() => toggleSave(item)}>
-                    <FaRegBookmark className={`icon ${saves[item._id] ? 'saved' : ''}`} />
-                    <span>Save: {item.saveCount ?? item.saves ?? 0}</span>
-                  </div>
+                <div
+                  className="action-btn"
+                  onClick={() =>
+                    toggleSave(item)
+                  }
+                >
+                  <FaRegBookmark
+                    className={`icon ${
+                      saves[item._id]
+                        ? "saved"
+                        : ""
+                    }`}
+                  />
 
-                  <div className="action-btn" onClick={() => openComments(item)}>
-                    <FaRegCommentDots className="icon" />
-                    <span>Comments</span>
-                  </div>
+                  <span>
+                    Save:{" "}
+                    {item.saveCount ??
+                      item.saves ??
+                      0}
+                  </span>
                 </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="saved-container">
-            {savedVideos.map((item) => (
-              <div key={item._id} className="saved-item">
-                <video src={item.food.video} className="saved-video" muted loop autoPlay />
-              </div>
-            ))}
-          </div>
-        )}
 
-        {/* Comment Modal */}
+                {/* COMMENTS */}
+
+                <div
+                  className="action-btn"
+                  onClick={() =>
+                    openComments(item)
+                  }
+                >
+                  <FaRegCommentDots className="icon" />
+
+                  <span>
+                    Comments
+                  </span>
+                </div>
+
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* ================= COMMENT MODAL ================= */}
+
         {selectedFood && (
           <div className="comment-modal">
             <div className="comment-box">
+
               <div className="comment-header">
                 <h3>Comments</h3>
-                <FaTimes onClick={closeComments} className="close-btn" />
+
+                <FaTimes
+                  onClick={closeComments}
+                  className="close-btn"
+                />
               </div>
+
               <div className="comment-list">
+
                 {comments.length > 0 ? (
                   comments.map((c, i) => (
                     <p key={i}>
-                      <strong>{c.user?.fullName || 'you '}:</strong> {c.comment}
+                      <strong>
+                        {c.foodPartner?.name ||
+                          "Creator"}
+                        :
+                      </strong>{" "}
+                      {c.comment}
                     </p>
                   ))
                 ) : (
-                  <p>No comments yet</p>
+                  <p>
+                    No comments yet
+                  </p>
                 )}
+
               </div>
+
               <div className="comment-input">
+
                 <input
                   type="text"
                   placeholder="Add a comment..."
                   value={newComment}
-                  onChange={(e) => setNewComment(e.target.value)}
+                  onChange={(e) =>
+                    setNewComment(
+                      e.target.value
+                    )
+                  }
                 />
-                <button onClick={submitComment}>Post</button>
+
+                <button
+                  onClick={submitComment}
+                >
+                  Post
+                </button>
+
               </div>
             </div>
           </div>
         )}
 
+        {/* ================= BOTTOM NAVIGATION ================= */}
+
         <div className="bottom-nav">
+
+          {/* HOME */}
+
           <div
-            className={`nav-icon ${!showSaved ? 'active' : ''}`}
-            onClick={() => setShowSaved(false)}
+            className="nav-icon active"
+            onClick={() =>
+              navigate("/home")
+            }
           >
             <FaHome />
             <span>Home</span>
           </div>
 
+
+          {/* UPLOAD */}
+
           <div
-            className={`nav-icon ${showSaved ? 'active' : ''}`}
-            onClick={() => Navigate('/saved')}
+            className="nav-icon"
+            onClick={() =>
+              navigate("/create-food")
+            }
+          >
+            <FaPlus />
+            <span>Upload</span>
+          </div>
+
+
+          {/* SAVED */}
+
+          <div
+            className="nav-icon"
+            onClick={() =>
+              navigate("/saved")
+            }
           >
             <FaBookmark />
             <span>Saved</span>
           </div>
+
+
+          {/* PROFILE */}
+
+          <div
+            className="nav-icon"
+            onClick={() =>
+              navigate("/profile")
+            }
+          >
+            <FaUser />
+            <span>Profile</span>
+          </div>
+
         </div>
+
       </div>
     </div>
   );

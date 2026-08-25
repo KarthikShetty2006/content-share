@@ -44,9 +44,6 @@ const Profile = () => {
             </p>
 
             <div className="profile-actions">
-              <Link to={`/food-partner/${id}/edit`} className="profile-pill">
-                Edit Profile
-              </Link>
               {profile?.website && (
                 <a
                   className="profile-pill"

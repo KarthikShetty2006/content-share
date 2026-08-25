@@ -1,8 +1,8 @@
 const mongoose=require('mongoose')
 const saveSchema=new mongoose.Schema({
-     user:{
+    foodPartner:{
             type:mongoose.Schema.Types.ObjectId,
-            ref:'user',
+            ref:'foodpartner',
             required:true 
         },
         food:{
@@ -14,6 +14,9 @@ const saveSchema=new mongoose.Schema({
         timestamps:true
     }
 )
-
+saveSchema.index(
+  { foodPartner: 1, food: 1 },
+  { unique: true }
+);
 const saveModel=mongoose.model('save',saveSchema)
 module.exports=saveModel
