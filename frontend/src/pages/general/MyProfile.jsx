@@ -12,7 +12,7 @@ import {
 import { useNavigate, useLocation } from "react-router-dom";
 import "./MyProfile.css";
 
-const API_URL = "http://localhost:3000";
+const API_URL = "https://content-share-livid.vercel.app";
 
 const MyProfile = () => {
   const navigate = useNavigate();
