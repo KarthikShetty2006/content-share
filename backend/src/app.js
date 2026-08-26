@@ -12,57 +12,57 @@ const app = express();
 // CORS
 // ======================================================
 
-const allowedOrigins = [
-   "https://content-share-24a9.vercel.app",
-  "http://localhost:5173",
-  "http://localhost:5174",
-];
+const corsOptions = {
+  origin: function (origin, callback) {
+    const allowedOrigins = [
+      "http://localhost:5173",
+      "http://localhost:5174",
+      "https://content-share-24a9.vercel.app",
+    ];
 
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      // Allow Postman and requests without an Origin
-      if (!origin) {
-        return callback(null, true);
-      }
+    // Postman / server-to-server
+    if (!origin) {
+      return callback(null, true);
+    }
 
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
 
-      console.log("Blocked CORS origin:", origin);
+    console.log("CORS blocked:", origin);
 
-      return callback(
-        new Error("Not allowed by CORS")
-      );
-    },
+    return callback(null, false);
+  },
 
-    credentials: true,
+  credentials: true,
 
-    methods: [
-      "GET",
-      "POST",
-      "PUT",
-      "PATCH",
-      "DELETE",
-      "OPTIONS",
-    ],
+  methods: [
+    "GET",
+    "POST",
+    "PUT",
+    "PATCH",
+    "DELETE",
+    "OPTIONS",
+  ],
 
-    allowedHeaders: [
-      "Content-Type",
-      "Authorization",
-    ],
-  })
-);
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization",
+  ],
 
-// ======================================================
-// HANDLE PREFLIGHT REQUESTS
-// ======================================================
+  optionsSuccessStatus: 204,
+};
 
-app.options("*", cors());
+app.use(cors(corsOptions));
 
 // ======================================================
-// MIDDLEWARE
+// PREFLIGHT
+// ======================================================
+
+app.options(/.*/, cors(corsOptions));
+
+// ======================================================
+// BODY / COOKIE MIDDLEWARE
 // ======================================================
 
 app.use(cookieParser());
@@ -70,7 +70,7 @@ app.use(cookieParser());
 app.use(express.json());
 
 // ======================================================
-// TEST ROUTE
+// TEST
 // ======================================================
 
 app.get("/", (req, res) => {
@@ -97,9 +97,5 @@ app.use(
   "/api/food-partner",
   foodPartnerRoutes
 );
-
-// ======================================================
-// EXPORT
-// ======================================================
 
 module.exports = app;

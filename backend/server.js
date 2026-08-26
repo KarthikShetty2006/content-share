@@ -3,19 +3,27 @@ require("dotenv").config();
 const app = require("./src/app");
 const connectDB = require("./src/db/db");
 
-const PORT = 3000;
+let dbConnected = false;
 
-connectDB()
-  .then(() => {
-    app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-    });
-  })
-  .catch((error) => {
+async function handler(req, res) {
+  try {
+    if (!dbConnected) {
+      await connectDB();
+      dbConnected = true;
+    }
+
+    return app(req, res);
+  } catch (error) {
     console.error(
-      "Server could not start:",
+      "Server initialization error:",
       error.message
     );
 
-    process.exit(1);
-  });
+    return res.status(500).json({
+      message: "Server initialization failed",
+      error: error.message,
+    });
+  }
+}
+
+module.exports = handler;
