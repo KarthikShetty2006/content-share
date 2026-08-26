@@ -13,10 +13,12 @@ async function connectDB() {
     });
 
     console.log("MongoDB connected successfully");
-
-    return true;
   } catch (error) {
-    console.error("MongoDB connection failed:", error.message);
+    console.error(
+      "MongoDB connection failed:",
+      error.message
+    );
+
     throw error;
   }
 }
