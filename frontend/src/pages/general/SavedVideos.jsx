@@ -5,11 +5,16 @@ import {
   FaBookmark,
   FaPlus,
   FaUser,
+  FaHeart,
+  FaComment,
+  FaPlay,
 } from "react-icons/fa";
 import {
   useNavigate,
   useLocation,
 } from "react-router-dom";
+
+import "../../styles/SavedVideos.css";
 
 const SavedVideos = () => {
   const [savedVideos, setSavedVideos] = useState([]);
@@ -23,116 +28,325 @@ const SavedVideos = () => {
   // ======================================================
 
   useEffect(() => {
-  const fetchSavedVideos = async () => {
-    try {
-      setLoading(true);
+    const fetchSavedVideos = async () => {
+      try {
+        setLoading(true);
 
-      const response = await axios.get(
-        "https://content-share-livid.vercel.app/api/food/saved",
-        {
-          withCredentials: true,
-        }
-      );
+        const response = await axios.get(
+          "https://content-share-livid.vercel.app/api/food/saved",
+          {
+            withCredentials: true,
+          }
+        );
 
-      console.log(
-        "Saved videos:",
-        response.data
-      );
+        console.log(
+          "Saved videos:",
+          response.data
+        );
 
-      setSavedVideos(
-        response.data.savedFoods || []
-      );
+        setSavedVideos(
+          response.data.savedFoods || []
+        );
 
-    } catch (error) {
-      console.error(
-        "Error fetching saved videos:",
-        error
-      );
+      } catch (error) {
+        console.error(
+          "Error fetching saved videos:",
+          error
+        );
 
-      setSavedVideos([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+        setSavedVideos([]);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  fetchSavedVideos();
-}, []);
+    fetchSavedVideos();
+  }, []);
+
+  // ======================================================
+  // PAGE
+  // ======================================================
 
   return (
-    <div className="app-background">
-      <div className="phone-frame">
+    <div className="saved-page">
+
+      <div className="saved-phone">
 
         {/* ==================================================
-            SAVED VIDEOS
+            HEADER
         ================================================== */}
 
-        <div className="saved-container">
+        <header className="saved-header">
 
-          {loading ? (
-            <p className="no-saved">
-              Loading saved videos...
+          <div>
+            <span className="saved-eyebrow">
+              CONTENT SHARE
+            </span>
+
+            <h1>
+              Saved Videos
+            </h1>
+
+            <p>
+              Your favorite food content,
+              all in one place.
             </p>
-          ) : savedVideos.length > 0 ? (
+          </div>
 
-            savedVideos.map((item) => (
+          <div className="saved-count">
 
-              <div
-                key={item._id}
-                className="saved-item"
-              >
-                <video
-                  src={item.food?.video}
-                  className="saved-video"
-                  muted
-                  loop
-                  autoPlay
-                  playsInline
-                />
+            <FaBookmark />
+
+            <strong>
+              {savedVideos.length}
+            </strong>
+
+            <span>
+              Saved
+            </span>
+
+          </div>
+
+        </header>
+
+
+        {/* ==================================================
+            COLLECTION INFO
+        ================================================== */}
+
+        {!loading &&
+          savedVideos.length > 0 && (
+            <div className="saved-collection">
+
+              <div className="saved-collection-icon">
+                <FaBookmark />
               </div>
 
-            ))
+              <div>
+                <h2>
+                  Your Collection
+                </h2>
+
+                <p>
+                  Keep your favorite food
+                  videos here for later.
+                </p>
+              </div>
+
+            </div>
+          )}
+
+
+        {/* ==================================================
+            CONTENT
+        ================================================== */}
+
+        <main className="saved-content">
+
+          {loading ? (
+
+            <div className="saved-loading">
+
+              <div className="saved-loader">
+                <FaBookmark />
+              </div>
+
+              <h3>
+                Loading your collection...
+              </h3>
+
+              <p>
+                Getting your saved videos.
+              </p>
+
+            </div>
+
+          ) : savedVideos.length > 0 ? (
+
+            <div className="saved-grid">
+
+              {savedVideos.map((item, index) => {
+
+                const food = item.food;
+
+                if (!food) {
+                  return null;
+                }
+
+                return (
+                  <article
+                    key={
+                      item._id || index
+                    }
+                    className="saved-card"
+                  >
+
+                    {/* VIDEO */}
+
+                    <div className="saved-video-wrapper">
+
+                      <video
+                        src={food.video}
+                        className="saved-video"
+                        muted
+                        loop
+                        autoPlay
+                        playsInline
+                        controls
+                      />
+
+                      <div className="saved-video-badge">
+                        <FaBookmark />
+                        Saved
+                      </div>
+
+                    </div>
+
+
+                    {/* VIDEO DETAILS */}
+
+                    <div className="saved-card-content">
+
+                      <h3>
+                        {food.name ||
+                          "Food Video"}
+                      </h3>
+
+                      <p>
+                        {food.description ||
+                          "No description available."}
+                      </p>
+
+
+                      {/* CREATOR */}
+
+                      {food.foodPartner && (
+                        <div className="saved-creator">
+
+                          <div className="saved-creator-avatar">
+                            {food.foodPartner.name
+                              ?.charAt(0)
+                              ?.toUpperCase() || "C"}
+                          </div>
+
+                          <div>
+                            <span>
+                              Created by
+                            </span>
+
+                            <strong>
+                              {food.foodPartner.name ||
+                                "Content Creator"}
+                            </strong>
+                          </div>
+
+                        </div>
+                      )}
+
+
+                      {/* STATS */}
+
+                      <div className="saved-stats">
+
+                        <span>
+                          <FaHeart />
+                          {food.likeCount || 0}
+                        </span>
+
+                        <span>
+                          <FaComment />
+                          {food.commentCount || 0}
+                        </span>
+
+                        <span>
+                          <FaBookmark />
+                          {food.saveCount || 0}
+                        </span>
+
+                      </div>
+
+                    </div>
+
+                  </article>
+                );
+              })}
+
+            </div>
 
           ) : (
 
-            <p className="no-saved">
-              No saved videos yet
-            </p>
+            /* ==================================================
+               EMPTY STATE
+            ================================================== */
+
+            <div className="saved-empty">
+
+              <div className="saved-empty-icon">
+                <FaBookmark />
+              </div>
+
+              <h2>
+                Nothing saved yet
+              </h2>
+
+              <p>
+                When you find a food video
+                you love, save it and it will
+                appear here.
+              </p>
+
+              <button
+                type="button"
+                onClick={() =>
+                  navigate("/home")
+                }
+              >
+                <FaPlay />
+
+                Discover Videos
+              </button>
+
+            </div>
 
           )}
 
-        </div>
+        </main>
 
 
         {/* ==================================================
             BOTTOM NAVIGATION
         ================================================== */}
 
-        <div className="bottom-nav">
+        <nav className="saved-profile-nav">
 
           {/* HOME */}
 
-          <div
-            className={`nav-icon ${
+          <button
+            type="button"
+            className={`saved-nav-item ${
               location.pathname === "/home"
-                ? "active"
+                ? "saved-nav-active"
                 : ""
             }`}
-            onClick={() => navigate("/home")}
+            onClick={() =>
+              navigate("/home")
+            }
           >
             <FaHome />
 
             <span>
               Home
             </span>
-          </div>
+          </button>
 
 
           {/* UPLOAD */}
 
-          <div
-            className={`nav-icon ${
+          <button
+            type="button"
+            className={`saved-nav-item ${
               location.pathname === "/create-food"
-                ? "active"
+                ? "saved-nav-active"
                 : ""
             }`}
             onClick={() =>
@@ -144,15 +358,16 @@ const SavedVideos = () => {
             <span>
               Upload
             </span>
-          </div>
+          </button>
 
 
           {/* SAVED */}
 
-          <div
-            className={`nav-icon ${
+          <button
+            type="button"
+            className={`saved-nav-item ${
               location.pathname === "/saved"
-                ? "active"
+                ? "saved-nav-active"
                 : ""
             }`}
             onClick={() =>
@@ -164,15 +379,16 @@ const SavedVideos = () => {
             <span>
               Saved
             </span>
-          </div>
+          </button>
 
 
           {/* PROFILE */}
 
-          <div
-            className={`nav-icon ${
+          <button
+            type="button"
+            className={`saved-nav-item ${
               location.pathname === "/profile"
-                ? "active"
+                ? "saved-nav-active"
                 : ""
             }`}
             onClick={() =>
@@ -184,11 +400,12 @@ const SavedVideos = () => {
             <span>
               Profile
             </span>
-          </div>
+          </button>
 
-        </div>
+        </nav>
 
       </div>
+
     </div>
   );
 };
