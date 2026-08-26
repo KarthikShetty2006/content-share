@@ -3,14 +3,9 @@ require("dotenv").config();
 const app = require("./src/app");
 const connectDB = require("./src/db/db");
 
-let dbConnected = false;
-
 async function handler(req, res) {
   try {
-    if (!dbConnected) {
-      await connectDB();
-      dbConnected = true;
-    }
+    await connectDB();
 
     return app(req, res);
   } catch (error) {
