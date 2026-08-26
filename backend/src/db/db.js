@@ -3,8 +3,7 @@ const mongoose = require("mongoose");
 async function connectDB() {
   try {
     if (!process.env.MONGODB_URI) {
-      console.error("MONGODB_URI is missing");
-      return;
+      throw new Error("MONGODB_URI is missing");
     }
 
     console.log("Connecting to MongoDB...");
@@ -14,8 +13,11 @@ async function connectDB() {
     });
 
     console.log("MongoDB connected successfully");
+
+    return true;
   } catch (error) {
     console.error("MongoDB connection failed:", error.message);
+    throw error;
   }
 }
 
