@@ -18,6 +18,7 @@ app.use(
     origin: [
       "http://localhost:5173",
       "http://localhost:5174",
+      "https://content-share-24a9.vercel.app"
     ],
     credentials: true,
   })
